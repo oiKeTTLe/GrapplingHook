@@ -1,0 +1,100 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Sprites/Player/PlayerFighter.png" type="Texture" id=1]
+[ext_resource path="res://Sword.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Chain.tscn" type="PackedScene" id=3]
+[ext_resource path="res://PlayerOne.gd" type="Script" id=15]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "Idle",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "Block",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "Running",
+"speed": 8.0
+}, {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "MidPunch",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "Hurt",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "Dead",
+"speed": 5.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 14.2117
+height = 5.25313
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 4.84347
+
+[node name="PlayerOne" type="KinematicBody2D"]
+collision_mask = 2
+script = ExtResource( 15 )
+
+[node name="Chain" parent="." instance=ExtResource( 3 )]
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+scale = Vector2( 2, 2 )
+frames = SubResource( 1 )
+animation = "Idle"
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( -1.32912, 0.231181 )
+shape = SubResource( 2 )
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 21.7238, -3.17839 )
+shape = SubResource( 3 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+margin_left = -17.9337
+margin_top = -67.0153
+margin_right = 22.0663
+margin_bottom = -27.0153
+text = "Player One"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="dashcooldown" type="Timer" parent="."]
+one_shot = true
+
+[node name="dashlength" type="Timer" parent="."]
+one_shot = true
+
+[node name="Sword" parent="." instance=ExtResource( 2 )]
+
+[node name="ghosttimer" type="Timer" parent="."]
+wait_time = 0.015
+autostart = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+smoothing_enabled = true
+smoothing_speed = 10.0
+[connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]
+[connection signal="timeout" from="dashcooldown" to="." method="_on_dashcooldown_timeout"]
+[connection signal="timeout" from="dashlength" to="." method="_on_dashlength_timeout"]
+[connection signal="timeout" from="ghosttimer" to="." method="_on_ghosttimer_timeout"]
